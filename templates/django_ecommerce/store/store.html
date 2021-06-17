@@ -1,0 +1,119 @@
+{% extends 'django_ecommerce/base.html' %}
+{% load static %}
+{% block content %}
+
+
+      {% include 'django_ecommerce/includes/common_navbar.html' %}
+
+    
+        <section class="module-small">
+          <div class="container">
+            <form action="{% url 'filter_products' %}" method="GET" class="row">
+              <div class="col-sm-4 mb-sm-20">
+                <select disabled class="form-control">
+                  <option selected="selected">Default Sorting</option>
+                  <option>Popular</option>
+                  <option>Latest</option>
+                  <option>Average Price</option>
+                  <option>High Price</option>
+                  <option>Low Price</option>
+                </select>
+              </div>
+              <div class="col-sm-2 mb-sm-20">
+                <select name="customer_type" class="form-control">
+                  <option selected="selected">wonam</option>
+                  <option>man</option>
+                  <option>kids</option>
+                  <option>all</option>
+                </select>
+              </div>
+              <div class="col-sm-3 mb-sm-20">
+                <select name="keyword" class="form-control">
+                  {% for category in links %}
+                  <option>{{ category.slug }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <button class="btn btn-block btn-round btn-g" type="submit">Apply</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <hr class="divider-w">
+        <section class="module-small">
+          <div class="container">
+          
+          {% if keyword %}
+            <div class="alert alert-info" role="alert"><strong>{{ product_count }}</strong> items found.</div>
+          {% endif %}
+          
+            <div class="row multi-columns-row">
+
+              {% if products %}
+                {% for product in products %}
+                  <div class="col-sm-6 col-md-3 col-lg-3">
+                    <div class="shop-item">
+                      <div class="shop-item-image"><img src="{{ product.images.url }}" alt="product image"/>
+                        <div class="shop-item-detail">
+                          {% if product.stock <= 0 %}
+                            <div class="alert alert-warning out-of-stock-product" role="alert">
+                              <strong>
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                              </strong> Out of Stock
+                            </div>
+                          {% else %}
+                            <a class="btn btn-round btn-b" href="{{ product.get_url }}"><span><i class="fa fa-eye" aria-hidden="true"></i> View Details</span></a>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <h4 class="shop-item-title font-alt"><a href="{{ product.get_url }}">{{ product.product_name }}</a></h4>
+                      <div class="rating-star">
+                        <span>
+                          <i class="fa fa-star{% if product.average_review < 0.5 %}-o{% elif product.average_review >= 0.5 and product.average_review < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 1.5 %}-o{% elif product.average_review >= 1.5 and product.average_review < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 2.5 %}-o{% elif product.average_review >= 2.5 and product.average_review < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 3.5 %}-o{% elif product.average_review >= 3.5 and product.average_review < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 4.5 %}-o{% elif product.average_review >= 4.5 and product.average_review < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      £{{ product.price }}
+                    </div>
+                  </div>
+                  {% endfor %}
+              {% endif %}
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <nav class="mt-4" aria-label="Page navigation sample">
+                  {% if products.has_other_pages %}
+                    <ul class="pagination">
+                      {% if products.has_previous %}
+                          <li class="page-item"><a class="page-link" href="?{% if customer_type %}customer_type={{ customer_type }}&{% endif %}{% if keyword %}keyword={{ keyword }}&{% endif %}page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li> 
+                      {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a></li>
+                      {% endif %}
+                      {% for index in products.paginator.page_range %}
+                        {% if products.number == index %}
+                          <li class="page-item active"><a class="page-link" href="#">{{ index }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?{% if customer_type %}customer_type={{ customer_type }}&{% endif %}{% if keyword %}keyword={{ keyword }}&{% endif %}page={{ index }}">{{ index }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                      {% if products.has_next %}
+                          <li class="page-item"><a class="page-link" href="?{% if customer_type %}customer_type={{ customer_type }}&{% endif %}{% if keyword %}keyword={{ keyword }}&{% endif %}page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+                      {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a></li>
+                      {% endif %}
+                    </ul>
+                  {% endif %}
+                </nav>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+
+
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% load static %}
+
+
+<li class="navbar-cart">
+    <a class="nav-link" href="{% url 'cart' %}">
+        <span class="icon-basket"></span>
+        <span class="cart-item-number">{{ cart_count }}</span>
+    </a>
+</li>
+
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Search</a>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+        <div class="dropdown-search">
+            <form action="{% url 'search' %}" method="GET" role="form">
+            <input name="keyword" class="form-control" type="text" placeholder="Search..." required/>
+            <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        </li>
+    </ul>
+</li>

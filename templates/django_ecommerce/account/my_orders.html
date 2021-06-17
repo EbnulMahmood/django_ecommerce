@@ -1,0 +1,50 @@
+{% extends 'django_ecommerce/base.html' %}
+{% block content %}
+
+
+
+        {% include 'django_ecommerce/includes/plain_navbar.html' %}
+
+        {% include 'django_ecommerce/includes/dashboard_sidebar.html' %}
+
+
+        
+              <div class="col-sm-8 col-sm-offset-1">
+                <h4 class="font-alt">Order History</h4>
+                
+                {% include 'django_ecommerce/includes/alerts.html' %}
+                
+                <hr class="divider-d">
+              </div>
+              <div class="col-sm-8 col-sm-offset-1 table-responsive">  
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <th scope="col">Order ID #</th>
+                        <th scope="col">Billing Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Order Total</th>
+                        <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <th scope="row"><a href="{% url 'order_detail' order.order_number %}">{{ order.order_number }}</a></th>
+                            <td>{{ order.full_name }}</td>
+                            <td>{{ order.email }}</td>
+                            <td>${{ order.order_total }}</td>
+                            <td>{{ order.created_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr class="divider-d">
+
+
+
+{% endblock content %}

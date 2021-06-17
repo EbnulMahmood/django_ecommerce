@@ -1,0 +1,27 @@
+{% load static %}
+
+
+<section class="module">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-md-3 sidebar">
+                <div class="widget">
+                    <a title="{{ user.full_name }}" href="#" class="twPc-avatarLink">
+                    <img alt="User Profile Picture" src="{% if user.userprofile.profile_picture %}{{ user.userprofile.profile_picture.url }}{% else %}
+                    {% static 'assets/images/default avatar.jpg' %}{% endif %}" class="twPc-avatarImg">
+                    </a>
+                    <div class="twPc-divUser">
+                    <div class="twPc-divName">
+                        <a href="#">{{ user.full_name | capfirst }}</a>
+                    </div>
+                    </div>
+                </div>
+                <div class="widget">
+                    <ul class="list-group">
+                        <li><a class="list-group-item {% if '/dashboard/' in request.path %}active{% endif %}" href="{% url 'dashboard' %}"><i class="fa fa-fw">&#xF0E4;</i> Dashboard </a></li>
+                        <li><a class="list-group-item {% if '/my_orders/' in request.path %}active{% endif %}" href="{% url 'my_orders' %}"><i class="fa fa-fw">&#xF07A;</i> My Orders </a></li>
+                        <li><a class="list-group-item {% if '/edit_profile/' in request.path %}active{% endif %}" href="{% url 'edit_profile' %}"><i class="fa fa-fw">&#xF044;</i> Edit Profile </a></li>
+                        <li><a class="list-group-item {% if '/change_password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}"><i class="fa fa-key" aria-hidden="true"></i> Change Password </a></li>
+                    </ul>
+                </div>
+            </div>

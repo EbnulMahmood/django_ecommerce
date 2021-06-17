@@ -1,0 +1,43 @@
+<div class="container">
+          <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{% url 'home' %}">Titan</a>
+          </div>
+          <div class="collapse navbar-collapse" id="custom-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown"><a class="dropdown-toggle" href="{% url 'home' %}" data-toggle="dropdown">Home</a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url 'home' %}"><i class="fa fa-fw">&#xf015;</i> Titan</a></li>
+                  <li><a href="{% url 'store' %}"><i class="fa fa-fw">&#xf06e;</i> Shop</a></li>
+                </ul>
+              </li>
+              <li class="dropdown"><a class="dropdown-toggle" href="{% url 'dashboard' %}" data-toggle="dropdown">Account</a>
+                <ul class="dropdown-menu" role="menu">
+                  {% if user.id is None %} 
+                  <li><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a></li>
+                  <li><a href="{% url 'register' %}"><i class="fa fa-fw">&#xf0f0;</i> Register</a></li>
+                  {% else %}
+                  <li><a href="{% url 'dashboard' %}"><i class="fa fa-fw">&#xF0E4;</i> Dashboard</a></li>
+                  <li><a href="{% url 'my_orders' %}"><i class="fa fa-fw">&#xF07A;</i> My Orders</a></li>
+                  <li><a href="{% url 'edit_profile' %}"><i class="fa fa-fw">&#xF044;</i> Edit Profile</a></li>
+                  <li><a href="{% url 'change_password' %}"><i class="fa fa-key" aria-hidden="true"></i> Change Password</a></li>                  
+                  <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a></li>
+                  {% endif %}
+                </ul>
+              </li>
+              <li class="dropdown"><a class="dropdown-toggle" href="{% url 'store' %}" data-toggle="dropdown">Shop</a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="{% url 'store' %}"><i class="fa fa-fw">&#xf06e;</i> Store</a></li>
+                  <li><a href="{% url 'checkout' %}"><i class="fa fa-fw">&#xf046;</i> Checkout</a></li>
+                </ul>
+              </li>
+
+              
+
+              {% include 'django_ecommerce/includes/nav_cart.html' %}
+
+
+
+            </ul>
+          </div>
+        </div>
+      </nav>

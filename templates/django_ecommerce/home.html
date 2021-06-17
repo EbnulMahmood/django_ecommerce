@@ -1,0 +1,118 @@
+{% extends 'django_ecommerce/base.html' %}
+{% load static %}
+{% block content %}
+
+
+      {% include 'django_ecommerce/includes/navbar.html' %}
+
+
+      <div class="main">
+        <section class="module-small">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">Latest in clothing</h2>
+              </div>
+            </div>
+            <div class="row multi-columns-row">
+              {% for product in products %}
+              <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="shop-item">
+                  <div class="shop-item-image"><img src="{{ product.images.url }}" alt="product image"/>
+                    <div class="shop-item-detail"><a href="{{ product.get_url }}" class="btn btn-round btn-b"><span><i class="fa fa-eye" aria-hidden="true"></i> View Details</span></a></div>
+                  </div>
+                  <h4 class="shop-item-title font-alt"><a href="{{ product.get_url }}">{{ product.product_name | slice:"0:23" }}</a></h4>
+                  <div class="rating-star">
+                    <span>
+                      <i class="fa fa-star{% if product.average_review < 0.5 %}-o{% elif product.average_review >= 0.5 and product.average_review < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                      <i class="fa fa-star{% if product.average_review < 1.5 %}-o{% elif product.average_review >= 1.5 and product.average_review < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                      <i class="fa fa-star{% if product.average_review < 2.5 %}-o{% elif product.average_review >= 2.5 and product.average_review < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                      <i class="fa fa-star{% if product.average_review < 3.5 %}-o{% elif product.average_review >= 3.5 and product.average_review < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                      <i class="fa fa-star{% if product.average_review < 4.5 %}-o{% elif product.average_review >= 4.5 and product.average_review < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                  £{{ product.price }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="row mt-30">
+              <div class="col-sm-12 align-center"><a class="btn btn-b btn-round" href="{% url 'store' %}">See all products</a></div>
+            </div>
+          </div>
+        </section>
+        <section class="module module-video bg-dark-30" data-background="">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt mb-0">Be inspired. Get ahead of trends.</h2>
+              </div>
+            </div>
+          </div>
+          <div class="video-player" data-property="{videoURL:'https://www.youtube.com/watch?v=H1YIgwPsX5Q', containment:'.module-video', startAt:0, mute:true, autoPlay:true, loop:true, opacity:1, showControls:false, showYTLogo:false, vol:25}"></div>
+        </section>
+        <section class="module">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">Exclusive products</h2>
+                <div class="module-subtitle font-serif">The languages only differ in their grammar, their pronunciation and their most common words.</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="owl-carousel text-center" data-items="5" data-pagination="false" data-navigation="false">
+                {% for product in top_products %}
+                <div class="owl-item">
+                  <div class="col-sm-12">
+                    <div class="ex-product"><a href="{{ product.get_url }}"><img title="{{ product.product_name }}" src="{{ product.images.url }}" alt="top porduct"/></a>
+                      <h4 class="shop-item-title font-alt"><a href="{{ product.get_url }}">{{ product.product_name | slice:"0:5" }}</a></h4>
+                      <div class="rating-star">
+                        <span>
+                          <i class="fa fa-star{% if product.average_review < 0.5 %}-o{% elif product.average_review >= 0.5 and product.average_review < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 1.5 %}-o{% elif product.average_review >= 1.5 and product.average_review < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 2.5 %}-o{% elif product.average_review >= 2.5 and product.average_review < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 3.5 %}-o{% elif product.average_review >= 3.5 and product.average_review < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                          <i class="fa fa-star{% if product.average_review < 4.5 %}-o{% elif product.average_review >= 4.5 and product.average_review < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      £{{ product.price }}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr class="divider-w">
+
+
+        <script>
+          const d = new Date();
+          const title_year = d.getFullYear();
+          const month = d.getMonth();
+
+          function getSeason(month) {
+              if (3 <= month <= 5) {
+                  return 'Spring';
+              }
+              else if (6 <= month <= 8) {
+                  return 'Summer';
+              }
+              else if (9 <= month <= 11) {
+                  return 'Fall';
+              }
+              else {
+                return 'Winter';
+              }
+          }
+
+          document.getElementById('slider-year').innerHTML = getSeason(month) + ' ' + title_year;
+
+        </script>
+
+
+        {% include 'django_ecommerce/includes/our_news.html' %}
+
+
+{% endblock content %}

@@ -1,0 +1,133 @@
+{% extends 'django_ecommerce/base.html' %}
+{% block content %}
+
+
+
+        {% include 'django_ecommerce/includes/plain_navbar.html' %}
+
+
+
+        <section class="module">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h1 class="module-title font-alt">Checkout</h1>
+              </div>
+            </div> 
+            <hr class="divider-w pt-20">
+            {% if not cart_items %}
+                <h3 class="text-center">Your Shopping Cart is Empty</h3>
+                <br>
+                <div class="text-center">
+                    <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+                </div>
+            {% else %}
+            <form class="form" role="form" action="{% url 'place_order' %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-0">
+                        <h4 class="font-alt mb-0">Billing Address</h4>
+                        <hr class="divider-w mt-10 mb-20">
+                        
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>First name</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.user.first_name %}{{ userprofile.user.first_name }}{% endif %}" name="first_name" placeholder="First Name" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Last name</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.user.last_name %}{{ userprofile.user.last_name }}{% endif %}" name="last_name" placeholder="Last Name" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input class="form-control" type="email" value="{% if userprofile.user.email %}{{ userprofile.user.email }}{% endif %}" name="email" placeholder="Email" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Address Line 1</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.address_line_1 %}{{ userprofile.address_line_1 }}{% endif %}" name="address_line_1" placeholder="Address Line 1" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Address Line 2</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.address_line_2 %}{{ userprofile.address_line_2 }}{% endif %}" name="address_line_2" placeholder="Address Line 2"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.city %}{{ userprofile.city }}{% endif %}" name="city" placeholder="City" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.state %}{{ userprofile.state }}{% endif %}" name="state" placeholder="State" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Country</label>
+                                    <input class="form-control" type="text" value="{% if userprofile.country %}{{ userprofile.country }}{% endif %}" name="country" placeholder="Country" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                <label>Order Note</label>
+                                <textarea class="form-control" rows="7" placeholder="Order Note"></textarea>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-0 table-responsive">
+                        <div class="shop-Cart-totalbox">
+                        <h4 class="font-alt">Cart Totals</h4>
+                        <table class="table table-striped table-border checkout-table">
+                            <tbody>
+                            <tr>
+                                <th>Cart Subtotal :</th>
+                                <td>£{{ total }}</td>
+                            </tr>
+                            <tr>
+                                <th>Shipping Total :</th>
+                                <td>£{{ tax }}</td>
+                            </tr>
+                            <tr class="shop-Cart-totalprice">
+                                <th>Total :</th>
+                                <td>£{{ grand_total }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button id="place_order" class="btn btn-lg btn-block btn-round btn-d" type="submit">Place Order</button>
+                        <button id="place_order_loading" class="btn btn-lg btn-block btn-round btn-d hidden" type="button" disabled>
+                            <span class="spinner-grow" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
+            <hr class="divider-w">
+          </div>
+        </section>
+
+
+        
+        <script type="text/javascript">
+        {% if cart_items %}
+            document.getElementById('place_order').addEventListener('click', function(event) {
+                    document.getElementById('place_order').classList.add('hidden')
+                    document.getElementById('place_order_loading').classList.remove('hidden')
+            })
+        {% endif %}
+        </script>
+
+
+
+{% endblock content %}

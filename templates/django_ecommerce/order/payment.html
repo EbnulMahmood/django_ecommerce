@@ -1,0 +1,238 @@
+{% extends 'django_ecommerce/base.html' %}
+{% block content %}
+
+
+
+        {% include 'django_ecommerce/includes/plain_navbar.html' %}
+
+
+
+        <section class="module">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h1 class="module-title font-alt">Payment</h1>
+              </div>
+            </div>
+            <h4 class="mb-10">Review Your Order and Make Payment</h4>
+            <hr class="divider-w pt-20">
+            {% if not cart_items %}
+                <h3 class="text-center">Your Shopping Cart is Empty</h3>
+                <br>
+                <div class="text-center">
+                    <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+                </div>
+            {% else %}
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h4 class="card-title font-alt">Billing Address</h4>
+                                <p class="card-text mb-0">{{ order.full_name }}</p>
+                                <p class="card-text mb-0">{{ order.full_address }}</p>
+                                <p class="card-text mb-0">{{ order.city }}, {{ order.state }}</p>
+                                <p class="card-text mb-0">{{ order.country }}</p>
+                                {% if order.order_note %}
+                                    <p class="card-text mb-0">{{ order.order_note }}</p>
+                                {% endif %}
+                                <p class="card-text mb-0">{{ order.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="divider-w pt-20">
+                    <div class="">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h4 class="card-title font-alt">Payment Method</h4>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        PayPal (Unavailable)
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Dummy Payment
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="divider-w pt-20">
+                    <div class="table-responsive">
+                        <h4 class="font-alt">Review Products</h4>
+                        <table class="table table-striped table-border checkout-table">
+                        <tbody>
+                            <tr>
+                            <th class="hidden-xs">Item</th>
+                            <th>Description</th>
+                            <th class="hidden-xs">Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            </tr>
+
+                            {% for cart_item in cart_items %}
+                            <tr>
+                            <td class="hidden-xs"><a title="{{ cart_item.product.product_name }}" href="{{ cart_item.product.get_url }}"><img src="{{ cart_item.product.images.url }}" alt="product image"/></a></td>
+                            <td>
+                                <h5 class="product-title font-alt"><a title="{{ cart_item.product.product_name }}" href="{{ cart_item.product.get_url }}">{{ cart_item.product.product_name | slice:"0:12" }}</a></h5>
+                                <p class="text-muted small">
+                                {% if cart_item.variations.all %}
+                                    {% for item in cart_item.variations.all %}
+                                    {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }}<br>
+                                    {% endfor %}
+                                {% endif %}
+                                </p>
+                            </td>
+                            <td class="hidden-xs">
+                                <h5 class="product-title font-alt">£{{ cart_item.product.price }}</h5>
+                            </td>
+                            <td align="center">
+                                <label>{{ cart_item.quantity }}</label>
+                            </td>
+                            <td>
+                                <h5 class="product-title font-alt">£{{ cart_item.sub_total }}</h5>
+                            </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="table-responsive">
+                        <div class="shop-Cart-totalbox">
+                            <h4 class="font-alt">Cart Totals</h4>
+                            <table class="table table-striped table-border checkout-table">
+                                <tbody>
+                                <tr>
+                                    <th>Cart Subtotal :</th>
+                                    <td>£{{ total }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Shipping Total :</th>
+                                    <td>£{{ tax }}</td>
+                                </tr>
+                                <tr class="shop-Cart-totalprice">
+                                    <th>Total :</th>
+                                    <td>£{{ grand_total }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button id="make_payment" class="btn btn-lg btn-block btn-round btn-d">Dummy Payment</button>
+                            <button id="make_payment_loading" class="btn btn-lg btn-block btn-round btn-d hidden" type="button" disabled>
+                                <span class="spinner-grow" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                            <br>
+                            <div id="paypal-button-container"></div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+            {% endif %}
+          </div>
+        </section>
+
+
+
+        <script type="text/javascript">
+            document.getElementById('make_payment').addEventListener('click', function(event) {
+                submitFormData()
+            })
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            const orderID = "{{ order.order_number }}"
+            const transID = Math.random().toString(16).slice(2)
+            const payment_method = 'PayPal'
+            const status = 'COMPLETED'
+            const redirect_url = "{% url 'order_complete' %}"
+            
+            function submitFormData() {
+                document.getElementById('make_payment').classList.add('hidden')
+                document.getElementById('make_payment_loading').classList.remove('hidden')
+                let url = "{% url 'payment' %}"
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+                    'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        orderID: orderID,
+                        transID: transID,
+                        payment_method: payment_method,
+                        status: status,
+
+                    })
+                })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    window.location.href = redirect_url + '?order_number=' + data.order_number + '&payment_id=' + data.transID;
+                })
+            }
+        </script>
+
+        <script type="text/javascript">
+
+            let total_amount = "{{ grand_total }}"
+
+            // Render the PayPal button into #paypal-button-container
+            paypal.Buttons({
+
+                style: {
+                    color:  'blue',
+                    shape:  'rect',
+                    label:  'pay',
+                    height: 40
+                },
+
+                // Set up the transaction
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: total_amount
+                            }
+                        }]
+                    });
+                },
+
+                // Finalize the transaction
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Show a success message to the buyer
+                        alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                    });
+                }
+
+
+            }).render('#paypal-button-container');
+        </script>
+
+
+
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends 'django_ecommerce/base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+        {% include 'django_ecommerce/includes/plain_navbar.html' %}
+
+
+
+        <section class="module bg-dark-30" data-background="{% static 'assets/images/section-4.jpg' %}">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h1 class="module-title font-alt mb-0">Login</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="module">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-4 col-sm-offset-4 mb-sm-40">
+
+                {% if request.GET.command == 'varification' %}
+                <div class="alert alert-info" role="alert">
+                  <strong>Please varify your account! </strong>We have sent you a varification email at {{ request.GET.email }}.
+                </div>
+                {% endif %}
+
+                <h4 class="font-alt">Login</h4>
+
+                {% include 'django_ecommerce/includes/alerts.html' %}
+
+                <hr class="divider-w mb-10">
+                <form class="form" action="{% url 'login' %}" method="POST">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <input class="form-control" id="E-mail" type="email" name="email" placeholder="Email"/>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" id="password" type="password" name="password" placeholder="Password"/>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-round btn-b">Login</button>
+                  </div>
+                  <div class="form-group"><a href="{% url 'forgot_password' %}">Forgot Password?</a></div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+
+{% endblock content %}
